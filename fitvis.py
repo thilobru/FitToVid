@@ -49,7 +49,7 @@ class Config:
 
     # --- Color Generation Settings ---
     # Number of unique colors to generate.
-    NUM_COLORS = 200
+    NUM_COLORS = 20
     # Colormap to use. 'viridis', 'plasma', 'tab20', 'hsv' are good choices.
     COLORMAP = 'viridis'
 
@@ -227,7 +227,7 @@ def generate_frame_gpu(frame_info):
     glReadBuffer(GL_FRONT)
     pixels = glReadPixels(0, 0, Config.IMG_WIDTH, Config.IMG_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE)
     frame_path = os.path.join(frame_dir, f"frame_{frame_index:05d}.png")
-    imageio.imwrite(frame_path, np.frombuffer(pixels, dtype=np.uint8).reshape(Config.IMG_HEIGHT, Config.IMG_WIDTH, 3)[::-1, :, :])
+    imageio.imwrite(frame_path, np.frombuffer(pixels, dtype=np.uint8).reshape(Config.IMG_HEIGHT, Config.IMG_WIDTH, 3))#[::-1, :, :])
     return frame_path
 
 # ==============================================================================
