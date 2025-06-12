@@ -2,7 +2,7 @@ import os
 import glob
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
-import imageio
+import imageio.v2 as imageio
 import shutil
 import time
 import gpxpy
