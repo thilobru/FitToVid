@@ -1,4 +1,5 @@
 gpxpy
+fitparse
 numpy
 imageio
 Pillow
