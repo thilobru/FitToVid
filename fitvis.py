@@ -16,6 +16,8 @@ import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
+# Matplotlib is used for generating a large, visually distinct color palette
+import matplotlib.cm as cm
 
 # ==============================================================================
 # --- Master Configuration ---
@@ -44,9 +46,27 @@ class Config:
     # Background color (don't change format)
     BG_COLOR_CPU = "white" # For Pillow
     BG_COLOR_GPU = (1.0, 1.0, 1.0, 1.0) # For OpenGL (RGBA, 0-1)
-    # Track colors (don't change format)
-    TRACK_COLORS_CPU = [(255, 69, 0), (23, 190, 207), (44, 160, 44), (255, 127, 14), (148, 103, 189), (227, 119, 194)]
-    TRACK_COLORS_GPU = np.array(TRACK_COLORS_CPU, dtype=np.float32) / 255.0
+
+    # --- Color Generation Settings ---
+    # Number of unique colors to generate.
+    NUM_COLORS = 200
+    # Colormap to use. 'viridis', 'plasma', 'tab20', 'hsv' are good choices.
+    COLORMAP = 'viridis'
+
+    # --- Auto-Generated Colors (Do not edit) ---
+    try:
+        # Generate N visually distinct colors using a matplotlib colormap
+        _colormap = cm.get_cmap(COLORMAP, NUM_COLORS)
+        # Get colors as floats (0-1) and take only RGB, discard Alpha
+        _colors_float = _colormap(np.linspace(0, 1, NUM_COLORS))[:, :3]
+
+        # Convert to the correct format for each renderer
+        TRACK_COLORS_GPU = _colors_float.astype(np.float32)
+        TRACK_COLORS_CPU = [tuple(int(c * 255) for c in color) for color in _colors_float]
+    except Exception as e:
+        print(f"Warning: Could not generate colors with Matplotlib ({e}). Falling back to default.")
+        TRACK_COLORS_CPU = [(255, 69, 0), (23, 190, 207), (44, 160, 44)]
+        TRACK_COLORS_GPU = np.array(TRACK_COLORS_CPU, dtype=np.float32) / 255.0
 
 # ==============================================================================
 # --- Parsing and Data Processing (Common to both renderers) ---
