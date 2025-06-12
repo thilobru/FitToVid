@@ -3,3 +3,6 @@ numpy
 imageio
 Pillow
 imageio[ffmpeg]
+PyOpenGL
+PyOpenGL_accelerate
+pygame
