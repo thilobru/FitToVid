@@ -1,6 +1,7 @@
 gpxpy
 fitparse
 numpy
+matplotlib
 imageio
 Pillow
 imageio[ffmpeg]
