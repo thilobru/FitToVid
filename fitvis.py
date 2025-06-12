@@ -92,12 +92,18 @@ def normalize_and_project_tracks(tracks):
     num_normalized_points = (Config.VIDEO_DURATION_S * Config.FPS) * 4
     normalized_tracks = []
     for track_points in tracks:
+        # Added a check for empty tracks
+        if not track_points:
+            continue
         track_np = np.array(track_points)
         current_indices = np.linspace(0, 1, len(track_np))
         target_indices = np.linspace(0, 1, num_normalized_points)
         interp_lat = np.interp(target_indices, current_indices, track_np[:, 0])
         interp_lon = np.interp(target_indices, current_indices, track_np[:, 1])
         normalized_tracks.append(np.column_stack((interp_lat, interp_lon)))
+
+    if not normalized_tracks:
+        return []
 
     # Project geographical coordinates to pixel space
     all_points = np.vstack(normalized_tracks)
@@ -193,6 +199,11 @@ def generate_frame_gpu(frame_info):
         glDrawArrays(GL_LINE_STRIP, start_index, min(points_to_draw, gpu_worker_track_lengths[i]))
 
     glDisableClientState(GL_VERTEX_ARRAY)
+
+    pygame.display.flip()
+
+    glFinish()
+    
     glReadBuffer(GL_FRONT)
     pixels = glReadPixels(0, 0, Config.IMG_WIDTH, Config.IMG_HEIGHT, GL_RGB, GL_UNSIGNED_BYTE)
     frame_path = os.path.join(frame_dir, f"frame_{frame_index:05d}.png")
@@ -223,6 +234,8 @@ def main():
     # --- Step 2: Data Preparation ---
     print("\n[Step 2/4] Normalizing and projecting track data...")
     projected_tracks = normalize_and_project_tracks(tracks)
+    if not projected_tracks:
+        print("Stopping: No data to render after normalization."); return
     print(f"-> Data prepared for rendering.")
 
     # --- Step 3: Frame Generation ---
@@ -243,6 +256,11 @@ def main():
             track_offsets.append(current_offset)
             track_lengths.append(len(projected))
             current_offset += len(projected)
+        
+        # Add a safety check in case all tracks were empty/invalid
+        if not flat_data_list:
+            print("Stopping: No data to send to GPU after processing."); return
+
         init_args = (np.vstack(flat_data_list), track_offsets, track_lengths)
     else: # Default to CPU
         init_worker_func = init_worker_cpu
