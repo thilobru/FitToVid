@@ -103,8 +103,8 @@ def create_map_background(tracks):
     print("  Creating map background...")
     # Calculate the geographic bounding box for all tracks
     all_points = np.vstack([np.array(t) for t in tracks if t])
-    west, south = all_points.min(axis=0)
-    east, north = all_points.max(axis=0)
+    south, west = all_points.min(axis=0)
+    north, east = all_points.max(axis=0)
     
     # Get the list of tiles that cover this bounding box from mercantile
     tiles = list(mercantile.tiles(west, south, east, north, Config.MAP_ZOOM))
