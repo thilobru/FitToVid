@@ -33,7 +33,7 @@ pip install numpy imageio gpxpy fitparse Pillow pygame PyOpenGL PyOpenGL_acceler
 
 ### Step 3: Configure the Script
 
-Open the `main_unified.py` file and edit the `Config` class at the top to suit your needs. The most important settings are:
+Open the `fitvis.py` file and edit the `Config` class at the top to suit your needs. The most important settings are:
 
 * `RENDERER`: Switch between `'GPU'` and `'CPU'`.
 * `USE_MULTIPROCESSING`: Set to `True` for maximum speed on multi-core machines, or `False` to debug or run on a single core.
@@ -46,7 +46,7 @@ Open the `main_unified.py` file and edit the `Config` class at the top to suit y
 Execute the script from your terminal using this command:
 
 ```bash 
-python main_unified.py
+python fitvis.py
 ```
 
 The script will print its progress through the steps and notify you when the video is complete. The final `.mp4` file will be saved in the main project directory.
