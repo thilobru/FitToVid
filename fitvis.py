@@ -141,7 +141,6 @@ def create_map_background(tracks):
 # ==============================================================================
 # --- Data Processing ---
 # ==============================================================================
-# ... (Parsing functions remain the same) ...
 def parse_file_wrapper(file_path):
     """Selects the correct parser based on file extension."""
     ext = os.path.splitext(file_path)[1].lower()
@@ -199,10 +198,10 @@ def normalize_and_project_tracks(tracks, map_bounds=None):
         # --- Map Projection Logic ---
         # Convert lat/lon to pixel coordinates on the world map
         def latlon_to_pixels(lat, lon, zoom):
-            lat_rad = math.radians(lat)
+            lat_rad = np.radians(lat)
             n = 2.0 ** zoom
             xtile = (lon + 180.0) / 360.0 * n
-            ytile = (1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n
+            ytile = (1.0 - np.asinh(np.tan(lat_rad)) / math.pi) / 2.0 * n
             return xtile * 256, ytile * 256
 
         # Get pixel coords of the top-left corner of our stitched map
@@ -218,8 +217,10 @@ def normalize_and_project_tracks(tracks, map_bounds=None):
         # --- White Background Projection Logic ---
         all_points = np.vstack(normalized_tracks)
         min_lat, min_lon = all_points.min(axis=0); max_lat, max_lon = all_points.max(axis=0)
-        lat_range, lon_range = max_lat - min_lat, max_lon - min_lon; scale = 1
-        if lat_range > 0 and lon_range > 0: scale = min((Config.IMG_WIDTH - 2*Config.PADDING)/lon_range, (Config.IMG_HEIGHT - 2*Config.PADDING)/lat_range)
+        lat_range, lon_range = max_lat - min_lat, max_lon - min_lon
+        scale = 1
+        if lat_range > 0 and lon_range > 0:
+            scale = min((Config.IMG_WIDTH - 2*Config.PADDING)/lon_range, (Config.IMG_HEIGHT - 2*Config.PADDING)/lat_range)
         for track in normalized_tracks:
             x = Config.PADDING + (track[:, 1] - min_lon) * scale
             y = Config.PADDING + (max_lat - track[:, 0]) * scale
@@ -331,7 +332,6 @@ def generate_frame_gpu(frame_info):
     glDisableClientState(GL_VERTEX_ARRAY)
 
     pygame.display.flip()
-
     glFinish()
 
     glReadBuffer(GL_FRONT)
@@ -343,7 +343,6 @@ def generate_frame_gpu(frame_info):
 # ==============================================================================
 # --- Main Execution ---
 # ==============================================================================
-
 def main():
     print(f"--- Unified Track Renderer ---")
     print(f"MODE: {Config.RENDERER} | Multiprocessing: {'ENABLED' if Config.USE_MULTIPROCESSING else 'DISABLED'}")
@@ -376,7 +375,6 @@ def main():
     print(f"-> Data prepared for rendering.")
 
     # --- Step 4: Frame Generation ---
-    # ... (logic is now more complex)
     total_frames = Config.VIDEO_DURATION_S * Config.FPS
     print(f"\n[Step 4/5] Generating {total_frames} frames using {Config.RENDERER}...")
     frame_gen_start = time.time()
