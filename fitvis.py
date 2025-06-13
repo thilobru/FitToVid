@@ -37,7 +37,7 @@ class Config:
     USE_MULTIPROCESSING = True
 
     # --- Map Background Settings ---
-    USE_MAP_BACKGROUND = True  # <-- SET TO True TO ENABLE MAPS
+    USE_MAP_BACKGROUND = False  # <-- SET TO True TO ENABLE MAPS
     # The zoom level for the map. 12-15 is good for city/regional level. Higher is more zoomed in.
     MAP_ZOOM = 13
     # Tile server URL. {z}/{x}/{y} are placeholders.
