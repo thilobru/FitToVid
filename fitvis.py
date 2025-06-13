@@ -1,4 +1,3 @@
-# main_unified.py
 import os
 import glob
 from concurrent.futures import ProcessPoolExecutor
@@ -22,7 +21,7 @@ from OpenGL.GLU import *
 # Matplotlib is used for generating a large, visually distinct color palette
 import matplotlib.cm as cm
 
-# --- NEW: Imports for map background feature ---
+# --- Imports for map background feature ---
 import requests
 import mercantile
 
